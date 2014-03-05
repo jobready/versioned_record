@@ -1,0 +1,6 @@
+postgresql:
+  adapter:  postgresql
+  host:     localhost
+  username: daniel
+  password: 
+  database: versioned_record_test
