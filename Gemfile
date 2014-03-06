@@ -5,3 +5,5 @@ gemspec
 
 # TODO: This doesn't belong here
 gem "composite_primary_keys", path: '/Users/daniel/Projects/composite_primary_keys'
+
+gem 'byebug'

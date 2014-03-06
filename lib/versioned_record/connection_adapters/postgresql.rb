@@ -8,8 +8,8 @@ module ActiveRecord
         if options[:versioned] 
           super(table_name, options.merge(id: false)) do |table|
             table.column :id, :serial
-            table.integer :version
-            table.boolean :is_current_version
+            table.integer :version, default: 0
+            table.boolean :is_current_version, default: true
             yield(table)
           end
           add_index(table_name, [:id, :version], unique: true, name: "#{table_name}_versioned_pkey")

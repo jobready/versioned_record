@@ -9,7 +9,7 @@ module VersionedRecord
     end
 
     def find(*args)
-      if args.length == 1
+      if args.length == 1 && !args.first.kind_of?(Array)
         find_current(args.first)
       else
         super
