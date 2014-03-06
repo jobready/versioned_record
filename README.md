@@ -1,5 +1,9 @@
 # VersionedRecord
 
+[![Code Climate](https://codeclimate.com/github/jobready/versioned_record.png)](https://codeclimate.com/github/jobready/versioned_record)
+
+[RDocs](http://rdoc.info/github/jobready/versioned_record/master/frames)
+
 Versioned Record allows the creation of multiple versions of an active record that share an ID.
 The version and ID columns of a record form a composite primary key and as such this gem relies on the
 composite_primary_keys gem.
