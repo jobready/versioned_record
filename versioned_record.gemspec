@@ -30,4 +30,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec", "~> 2.14"
   spec.add_development_dependency "pg"
   spec.add_development_dependency "database_cleaner"
+  spec.add_development_dependency "yard"
 end

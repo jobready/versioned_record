@@ -41,6 +41,12 @@ describe VersionedProduct do
       it 'finds the latest version' do
         expect(VersionedProduct.find_current(first_version.id)).to eq(second_version)
       end
+
+      context 'where no matching record exists' do
+        it 'finds the latest version' do
+          expect { VersionedProduct.find_current(0) }.to raise_error(ActiveRecord::RecordNotFound)
+        end
+      end
     end
 
     describe '::current_versions' do
