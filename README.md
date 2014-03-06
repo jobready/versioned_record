@@ -27,6 +27,8 @@ Or install it yourself as:
 
 ## Usage
 
+### Setting up your table
+
 To create a versioned record, start by adding the `versioned: true` option to your migration and then (re)running.
 
     create_table :products, versioned: true do |t|
