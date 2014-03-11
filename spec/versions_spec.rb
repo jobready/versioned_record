@@ -14,7 +14,7 @@ describe VersionedProduct do
     end
 
     describe 'the new version' do
-      subject { perform }
+      subject { perform.reload }
       specify { expect(subject).to be_is_current_version }
       specify { expect(subject.version).to eq(1) }
       specify { expect(subject.name).to eq('iPad 2') }
@@ -40,7 +40,7 @@ describe VersionedProduct do
         begin
           first_version.create_version!(name: nil)
         rescue
-          expect(first_version.reload).to_not be_is_current_version
+          expect(first_version.reload).to be_is_current_version
         end
       end
     end
@@ -63,6 +63,71 @@ describe VersionedProduct do
 
         specify { expect(subject).to_not be_valid }
         specify { expect(subject).to_not be_persisted }
+      end
+    end
+  end
+
+  describe '#build_version' do
+    context 'with attributes provided directly' do
+      def perform
+        first_version.build_version(name: 'iPad 2').tap do |new_version|
+          new_version.save!
+        end
+      end
+
+      include_examples 'successful version creation'
+      
+      context 'when created record is invalid' do
+        it 'does not create a new version' do
+          expect {
+            new_version = first_version.build_version(name: 'f')
+            new_version.save
+          }.to_not change { VersionedProduct.count }
+        end
+
+        describe 'create result' do
+          subject do
+            first_version.build_version(name: 'f').tap do |new_version|
+              new_version.save
+            end
+          end
+
+          specify { expect(subject).to_not be_valid }
+          specify { expect(subject).to_not be_persisted }
+        end
+      end
+    end
+
+    context 'with attributes provided after initialization' do
+      def perform
+        first_version.build_version.tap do |new_version|
+          new_version.name = 'iPad 2'
+          new_version.save!
+        end
+      end
+
+      include_examples 'successful version creation'
+
+      context 'when created record is invalid' do
+        it 'does not create a new version' do
+          expect {
+            new_version = first_version.build_version
+            new_version.name = 'f'
+            new_version.save
+          }.to_not change { VersionedProduct.count }
+        end
+
+        describe 'create result' do
+          subject do
+            first_version.build_version.tap do |new_version|
+              new_version.name = 'f'
+              new_version.save
+            end
+          end
+
+          specify { expect(subject).to_not be_valid }
+          specify { expect(subject).to_not be_persisted }
+        end
       end
     end
   end

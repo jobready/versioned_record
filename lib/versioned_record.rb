@@ -12,6 +12,21 @@ module VersionedRecord
   def self.included(model_class)
     model_class.extend ClassMethods
     model_class.primary_keys = :id, :version
+    model_class.after_save :ensure_version_deprecation!, on: :create
+  end
+
+  def ensure_version_deprecation!
+    if deprecate_old_versions_after_create?
+      deprecate_old_versions(self)
+    end
+  end
+
+  def deprecate_old_versions_after_create?
+    @deprecate_old_versions_after_create
+  end
+
+  def deprecate_old_versions_after_create!
+    @deprecate_old_versions_after_create = true
   end
 
   # Create a new version of the existing record
@@ -28,31 +43,38 @@ module VersionedRecord
   #
   def create_version!(new_attrs = {})
     self.class.transaction do
-      #new_attrs.stringify_keys!
-      versions.update_all(is_current_version: false)
-      self.class.create!(
-        self.attributes.merge(new_attrs.merge({
-          is_current_version: true,
-          id:                 self.id,
-          version:            self.version + 1
-        }))
-      )
+      created = self.class.create!(new_version_attributes(new_attrs)).tap do |created|
+        deprecate_old_versions(created) if created.persisted?
+      end
     end
   end
 
   def create_version(new_attrs = {})
     self.class.transaction do
-      new_attrs.stringify_keys!
-      self.class.create(
-        self.attributes.merge(new_attrs.merge({
-          is_current_version: true,
-          id:                 self.id,
-          version:            self.version + 1
-        }))
-      ).tap do |created|
-        versions.update_all(is_current_version: false) if created.persisted?
+      self.class.create(new_version_attributes(new_attrs)).tap do |created|
+        deprecate_old_versions(created) if created.persisted?
       end
     end
+  end
+
+  def build_version(new_attrs = {})
+    new_version = self.class.new(new_version_attributes(new_attrs)).tap do |built|
+      built.deprecate_old_versions_after_create!
+    end
+  end
+
+  # TODO: Possibly put this into a class
+  def new_version_attributes(new_attrs = {})
+    _new_attrs = new_attrs.stringify_keys
+    self.attributes.merge(_new_attrs.merge({
+      is_current_version: true,
+      id:                 self.id,
+      version:            self.version + 1
+    }))
+  end
+
+  def deprecate_old_versions(current_version)
+    versions.exclude(current_version).update_all(is_current_version: false)
   end
 
   # Retrieve all versions of this record
