@@ -6,6 +6,8 @@ require 'versioned_record/version'
 require 'versioned_record/class_methods'
 require 'versioned_record/connection_adapters/postgresql'
 
+require 'byebug'
+
 module VersionedRecord
   def self.included(model_class)
     model_class.extend ClassMethods
@@ -26,6 +28,7 @@ module VersionedRecord
   #
   def create_version!(new_attrs = {})
     self.class.transaction do
+      #new_attrs.stringify_keys!
       versions.update_all(is_current_version: false)
       self.class.create!(
         self.attributes.merge(new_attrs.merge({
@@ -40,16 +43,14 @@ module VersionedRecord
   def create_version(new_attrs = {})
     self.class.transaction do
       new_attrs.stringify_keys!
-      attrs = new_attrs.merge(attributes)
-      p attrs
       self.class.create(
-        new_attrs.merge(self.attributes.merge({
+        self.attributes.merge(new_attrs.merge({
           is_current_version: true,
           id:                 self.id,
           version:            self.version + 1
         }))
       ).tap do |created|
-        versions.update_all(is_current_version: false) if created
+        versions.update_all(is_current_version: false) if created.persisted?
       end
     end
   end

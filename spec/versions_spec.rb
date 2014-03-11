@@ -3,11 +3,7 @@ require 'spec_helper'
 describe VersionedProduct do
   let!(:first_version) { VersionedProduct.create(name: 'iPad', price: 100) }
 
-  describe '#create_version!' do
-    def perform
-      first_version.create_version!(name: 'iPad 2')
-    end
-    
+  shared_examples 'successful version creation' do
     it 'creates a new version' do
       expect { perform }.to change { VersionedProduct.count }.by(1)
     end
@@ -20,11 +16,21 @@ describe VersionedProduct do
     describe 'the new version' do
       subject { perform }
       specify { expect(subject).to be_is_current_version }
-      specify { expect(perform.version).to eq(1) }
-      specify { expect(perform.name).to eq('iPad 2') }
-      specify { expect(perform.price).to eq(100) }
+      specify { expect(subject.version).to eq(1) }
+      specify { expect(subject.name).to eq('iPad 2') }
+      specify { expect(subject.price).to eq(100) }
+      specify { expect(subject).to be_valid }
+      specify { expect(subject).to be_persisted }
+    end
+  end
+
+  describe '#create_version!' do
+    def perform
+      first_version.create_version!(name: 'iPad 2')
     end
 
+    include_examples 'successful version creation'
+    
     context 'when created record is invalid' do
       it 'raises an error' do
         expect { first_version.create_version!(name: nil) }.to raise_error(ActiveRecord::RecordInvalid)
@@ -41,15 +47,22 @@ describe VersionedProduct do
   end
 
   describe '#create_version' do
-    # TODO: Include examples from create_version!
-    #
+    def perform
+      first_version.create_version(name: 'iPad 2')
+    end
+
+    include_examples 'successful version creation'
+
     context 'when created record is invalid' do
       it 'does not create a new version' do
         expect { first_version.create_version(name: 'f') }.to_not change { VersionedProduct.count }
       end
 
-      it 'returns false' do
-        expect(first_version.create_version(name: 'f')).to be_false
+      describe 'create result' do
+        subject { first_version.create_version(name: 'f') }
+
+        specify { expect(subject).to_not be_valid }
+        specify { expect(subject).to_not be_persisted }
       end
     end
   end
