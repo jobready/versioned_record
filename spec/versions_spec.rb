@@ -1,9 +1,9 @@
 require 'spec_helper'
 
 describe VersionedProduct do
-  describe '#create_version!' do
-    let!(:first_version) { VersionedProduct.create(name: 'iPad', price: 100) }
+  let!(:first_version) { VersionedProduct.create(name: 'iPad', price: 100) }
 
+  describe '#create_version!' do
     def perform
       first_version.create_version!(name: 'iPad 2')
     end
@@ -23,6 +23,34 @@ describe VersionedProduct do
       specify { expect(perform.version).to eq(1) }
       specify { expect(perform.name).to eq('iPad 2') }
       specify { expect(perform.price).to eq(100) }
+    end
+
+    context 'when created record is invalid' do
+      it 'raises an error' do
+        expect { first_version.create_version!(name: nil) }.to raise_error(ActiveRecord::RecordInvalid)
+      end
+
+      it 'does not change the current version flag on first version' do
+        begin
+          first_version.create_version!(name: nil)
+        rescue
+          expect(first_version.reload).to_not be_is_current_version
+        end
+      end
+    end
+  end
+
+  describe '#create_version' do
+    # TODO: Include examples from create_version!
+    #
+    context 'when created record is invalid' do
+      it 'does not create a new version' do
+        expect { first_version.create_version(name: 'f') }.to_not change { VersionedProduct.count }
+      end
+
+      it 'returns false' do
+        expect(first_version.create_version(name: 'f')).to be_false
+      end
     end
   end
 

@@ -37,6 +37,23 @@ module VersionedRecord
     end
   end
 
+  def create_version(new_attrs = {})
+    self.class.transaction do
+      new_attrs.stringify_keys!
+      attrs = new_attrs.merge(attributes)
+      p attrs
+      self.class.create(
+        new_attrs.merge(self.attributes.merge({
+          is_current_version: true,
+          id:                 self.id,
+          version:            self.version + 1
+        }))
+      ).tap do |created|
+        versions.update_all(is_current_version: false) if created
+      end
+    end
+  end
+
   # Retrieve all versions of this record
   # Can be chained with other scopes
   #
