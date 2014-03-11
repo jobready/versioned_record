@@ -1,6 +1,15 @@
-postgresql:
-  adapter:  postgresql
-  host:     localhost
-  username: daniel
-  password: 
-  database: versioned_record_test
+development:
+  postgresql:
+    adapter:  postgresql
+    host:     localhost
+    username: daniel
+    password: 
+    database: versioned_record_test
+travis:
+  postgresql:
+    adapter:  postgresql
+    host:     localhost
+    username: postgres
+    password: 
+    database: versioned_record_test
+
