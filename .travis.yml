@@ -1,0 +1,11 @@
+language: ruby
+rvm:
+  - "2.0.0"
+  - "2.1.1"
+script: bundle exec rspec spec
+addons:
+  postgresql: "9.3"
+before_script:
+  - export VERSIONED_RECORD_ENV=travis
+  - psql -c 'create database versioned_record_test;' -U postgres
+

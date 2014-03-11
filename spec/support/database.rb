@@ -1,5 +1,6 @@
+env = ENV['VERSIONED_RECORD_ENV'] || 'development'
 dbconfig = YAML::load_file(File.join(__dir__, 'database.yml'))
-ActiveRecord::Base.establish_connection(dbconfig['postgresql'])
+ActiveRecord::Base.establish_connection(dbconfig[env]['postgresql'])
 
 ActiveRecord::Schema.define :version => 0 do
 
