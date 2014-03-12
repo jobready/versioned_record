@@ -8,4 +8,7 @@ addons:
 before_script:
   - export VERSIONED_RECORD_ENV=travis
   - psql -c 'create database versioned_record_test;' -U postgres
-
+notifications:
+  hipchat: 83906daf46b0ce558ce21f13353861@246078
+  on_success: always
+  on_failure: always
