@@ -21,16 +21,17 @@ module VersionedRecord
   # Attributes that are not specified here will be copied to the new version from
   # the previous version
   #
+  # This method will still fire ActiveRecord callbacks for save/create etc as per
+  # normal record creation
+  #
   # @example
   #
   #     person_v1 = Person.create(name: 'Dan')
   #     person_v2 = person_v1.create_version!(name: 'Daniel')
   #
   def create_version!(new_attrs = {})
-    self.class.transaction do
-      created = self.class.create!(new_version_attrs(new_attrs)).tap do |created|
-        deprecate_old_versions(created) if created.persisted?
-      end
+    create_operation do
+      self.class.create!(new_version_attrs(new_attrs))
     end
   end
 
@@ -38,10 +39,8 @@ module VersionedRecord
   # @see VersionedRecord#create_version!
   #
   def create_version(new_attrs = {})
-    self.class.transaction do
-      self.class.create(new_version_attrs(new_attrs)).tap do |created|
-        deprecate_old_versions(created) if created.persisted?
-      end
+    create_operation do
+      self.class.create(new_version_attrs(new_attrs))
     end
   end
 
@@ -86,6 +85,14 @@ module VersionedRecord
 
     def deprecate_old_versions(current_version)
       versions.exclude(current_version).update_all(is_current_version: false)
+    end
+
+    def create_operation
+      self.class.transaction do
+        yield.tap do |created|
+          deprecate_old_versions(created) if created.persisted?
+        end
+      end
     end
 
     def deprecate_old_versions_after_create?
