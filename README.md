@@ -2,6 +2,7 @@
 
 [![Code Climate](https://codeclimate.com/github/jobready/versioned_record.png)](https://codeclimate.com/github/jobready/versioned_record)
 [![Build Status](https://travis-ci.org/jobready/versioned_record.png?branch=master)](https://travis-ci.org/jobready/versioned_record)
+[![Coverage Status](https://coveralls.io/repos/jobready/versioned_record/badge.png)](https://coveralls.io/r/jobready/versioned_record)
 
 [RDocs](http://rdoc.info/github/jobready/versioned_record/master/frames)
 
