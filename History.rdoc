@@ -1,0 +1,4 @@
+== 0.2.0 (2014-04-28)
+
+* First stable release (Dan Draper)
+  * Uses Rails 4 compatible version of CPK
