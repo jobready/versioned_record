@@ -77,6 +77,10 @@ Also, the `is_current_version` flag is unset for the old version and set for the
 
 Right now, only PostgreSQL has been tested. MySQL may or may not work but if you'd like to test/add support please fork and contribute!
 
+## Limitations
+
+Does not currently work with ActiveRecord 4.1+
+
 ## Author
 
 Dan Draper, dan at codehire dot com, [Codehire](http://www.codehire.com/), [@danieldraper](http://www.twitter.com/danieldraper)

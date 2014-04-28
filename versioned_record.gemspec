@@ -20,10 +20,8 @@ Gem::Specification.new do |spec|
 
   spec.required_ruby_version = '>= 2.0.0'
 
-  # TODO: Add runtime dependency for composite_primary_key once we either have the PR merged or fork our own version
-
-  spec.add_runtime_dependency "activerecord", "~> 4.0"
-  #spec.add_runtime_dependency 'composite_primary_keys', path: '/Users/daniel/Projects/composite_primary_keys'
+  spec.add_runtime_dependency "activerecord", "~> 4.0.0"
+  spec.add_runtime_dependency 'composite_primary_keys', '>= 6.0.3'
 
   spec.add_development_dependency "bundler", "~> 1.3"
   spec.add_development_dependency "rake"
