@@ -10,7 +10,7 @@ describe VersionedProduct do
 
     it 'unsets current version on first version' do
       perform
-      expect(first_version.reload).to_not be_is_current_version
+      expect(VersionedProduct.find(first_version.id, 0)).to_not be_is_current_version
     end
 
     describe 'the new version' do
