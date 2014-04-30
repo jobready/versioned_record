@@ -5,6 +5,8 @@ Coveralls.wear!
 require 'versioned_record'
 require 'database_cleaner'
 
+require 'byebug'
+
 Dir[("./spec/support/**/*.rb")].each {|f| require f}
 
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration

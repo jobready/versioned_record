@@ -70,7 +70,32 @@ Also, the `is_current_version` flag is unset for the old version and set for the
     product.is_current_version? => false
     product_v2.is_current_version? => true
 
-## TODO: Associations
+## Associations
+
+== `belongs_to` A versioned model, but references the latest version (general case)
+
+A simple `belongs_to` will work
+
+== `belongs_to` A versioned model but references a specific version
+
+`belongs_to` must specify the `foreign_key` and primary key settings
+
+    class Contract < ActiveRecord::Base
+      include VersionedRecord
+      has_many :apprentices, :foreign_key => [:contract_id, :contract_version], primary_key: [:id, :version ]
+    end
+
+    class Apprentice < ActiveRecord::Base
+      belongs_to :contract, :foreign_key => [:contract_id, :contract_version], primary_key: [ :id, version ]
+    end
+
+== `belongs_to` a non-versioned model
+
+Normal behaviour
+
+== `belongs_to` when this model is version
+
+As per above cases (versioning here has no effect)
 
 
 ## Database Support
@@ -79,7 +104,9 @@ Right now, only PostgreSQL has been tested. MySQL may or may not work but if you
 
 ## Limitations
 
-Does not currently work with ActiveRecord 4.1+
+* Does not currently work with ActiveRecord 4.1+
+* Calling reload on a model will load the latest _version_ of that record, not the specific one. (This is because id will return just the id and not the id/version composite.)
+
 
 ## Author
 

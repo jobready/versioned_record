@@ -14,10 +14,10 @@ module VersionedRecord
     #
     # @param [Hash] new_attrs are the attributes we are changing in this version
     def attributes(new_attrs)
-      @new_attrs = new_attrs.stringify_keys
-      @record.attributes.merge(@new_attrs.merge({
+      @new_attrs = new_attrs.symbolize_keys
+      attrs = @record.attributes.symbolize_keys.merge(@new_attrs.merge({
         is_current_version: true,
-        id:                 @record.id,
+        id:                 @record.id_with_version,
         version:            @record.version + 1
       }))
     end
