@@ -72,11 +72,11 @@ Also, the `is_current_version` flag is unset for the old version and set for the
 
 ## Associations
 
-== `belongs_to` A versioned model, but references the latest version (general case)
+### `belongs_to` A versioned model, but references the latest version (general case)
 
 A simple `belongs_to` will work
 
-== `belongs_to` A versioned model but references a specific version
+### `belongs_to` A versioned model but references a specific version
 
 `belongs_to` must specify the `foreign_key` and primary key settings
 
@@ -89,11 +89,11 @@ A simple `belongs_to` will work
       belongs_to :contract, :foreign_key => [:contract_id, :contract_version], primary_key: [ :id, version ]
     end
 
-== `belongs_to` a non-versioned model
+### `belongs_to` a non-versioned model
 
 Normal behaviour
 
-== `belongs_to` when this model is version
+### `belongs_to` when this model is version
 
 As per above cases (versioning here has no effect)
 
