@@ -72,21 +72,33 @@ Also, the `is_current_version` flag is unset for the old version and set for the
 
 ## Associations
 
-### `belongs_to` A versioned model, but references the latest version (general case)
+### Simple Belongs Too
 
-A simple `belongs_to` will work
+`belongs_to` A versioned model, but references the latest version (general case)
 
-### `belongs_to` A versioned model but references a specific version
+A simple `belongs_to` will work as normal but will always refer to the latest version of its parent.
 
-`belongs_to` must specify the `foreign_key` and primary key settings
+### Composite Belongs To
+
+`belongs_to` A versioned model but references a specific version
+
+`belongs_to` must specify the `foreign_key` and primary key settings. You should set autosave to false on the `belongs_to` for these types
+of associations.
 
     class Contract < ActiveRecord::Base
       include VersionedRecord
-      has_many :apprentices, :foreign_key => [:contract_id, :contract_version], primary_key: [:id, :version ]
+      has_many :apprentices, {
+        foreign_key: [:contract_id, :contract_version],
+        primary_key: [:id, :version ]
+      }
     end
 
     class Apprentice < ActiveRecord::Base
-      belongs_to :contract, :foreign_key => [:contract_id, :contract_version], primary_key: [ :id, version ]
+      belongs_to :contract, {
+        foreign_key: [:contract_id, :contract_version],
+        primary_key: [ :id, version ],
+        autosave: false
+      }
     end
 
 ### `belongs_to` a non-versioned model

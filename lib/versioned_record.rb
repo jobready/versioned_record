@@ -8,6 +8,7 @@ require 'versioned_record/class_methods'
 require 'versioned_record/connection_adapters/postgresql'
 require 'versioned_record/version'
 require 'versioned_record/composite_predicates'
+require 'versioned_record/active_record_versioning'
 
 ActiveRecord::Associations::AssociationScope.include(VersionedRecord::CompositePredicates)
 
@@ -80,6 +81,13 @@ module VersionedRecord
     #
     def versions
       self.class.where(id: self.id)
+    end
+
+    # Retrieve the current version of an object
+    # (May be itself)
+    #
+    def current_version
+      versions.current_versions.first
     end
 
     # Ensure that old versions are deprecated when we save

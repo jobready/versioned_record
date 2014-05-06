@@ -1,5 +1,9 @@
 module VersionedRecord
   module ClassMethods
+    def versioned?
+      true
+    end
+
     # Scope to limit records to only the current versions
     def current_versions
       where(is_current_version: true)

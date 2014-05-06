@@ -30,7 +30,10 @@ module VersionedRecord
       association_fields = Array(association_key).map { |key| association_table[key] }
 
       if fields.size == 1
-        eq_predicates = [ association_fields[0].eq(fields[0]), association_table[:is_current_version].eq(true) ]
+        eq_predicates = [ association_fields[0].eq(fields[0]) ]
+        if table.versioned? && association.reflection.macro != :belongs_to
+          eq_predicates << association_table[:is_current_version].eq(true)
+        end
         cpk_and_predicate(eq_predicates)
       else
         super
