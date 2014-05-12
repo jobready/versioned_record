@@ -6,6 +6,7 @@ require 'composite_primary_keys'
 require 'versioned_record/attribute_builder'
 require 'versioned_record/class_methods'
 require 'versioned_record/connection_adapters/postgresql'
+require 'versioned_record/attribute_methods/write'
 require 'versioned_record/version'
 require 'versioned_record/composite_predicates'
 require 'versioned_record/active_record_versioning'
@@ -22,7 +23,17 @@ module VersionedRecord
   end
 
   module InstanceMethods
-    def id
+    def ==(comparison_object)
+      if comparison_object.versioned?
+        self.id_with_version == comparison_object.id_with_version
+      end
+      # TODO: check object type too
+    end
+
+    # REVIEW: This approach may be a bad idea (it makes matching more difficult)
+    # It might be better just to keep id as a composite pkey and define _id as the simple id value
+    # with no version
+    def _id
       id_with_version[0]
     end
 

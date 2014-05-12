@@ -8,23 +8,22 @@ describe Sale do
     subject(:sale) { versioned_product.sales.create(purchaser: 'Dan Draper') }
 
     specify 'that the sale belongs to the specific version' do
-      expect(subject.versioned_product).to eq(versioned_product_revision)
+      expect(subject.versioned_product(true)).to eq(versioned_product)
     end
   end
 
   describe 'create directly' do
     let!(:sale) { Sale.create(purchaser: 'Dan Draper', versioned_product: versioned_product_revision) }
-    #let!(:sale) { versioned_product.sales.create(purchaser: 'Dan Draper') }
 
     specify 'that the comment belongs to the specific version' do
-      expect(sale.versioned_product).to eq(versioned_product_revision)
+      expect(sale.versioned_product(true)).to eq(versioned_product_revision)
     end
 
     context 'create another version of the parent' do
       let!(:vp3) { versioned_product_revision.create_version!(name: 'iPad 3') }
 
       specify 'that the comment STILL belongs to the specific version' do
-        expect(sale.versioned_product).to eq(versioned_product_revision)
+        expect(sale.versioned_product(true)).to eq(versioned_product_revision)
       end
     end
   end

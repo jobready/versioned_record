@@ -16,14 +16,14 @@ describe Comment do
     let!(:comment) { Comment.create(content: 'Awesome', versioned_product: versioned_product) }
 
     specify 'that the comment belongs to the latest version' do
-      expect(comment.versioned_product).to eq(versioned_product_revision)
+      expect(comment.versioned_product(true)).to eq(versioned_product_revision)
     end
 
     context 'create another version of the parent' do
       let!(:vp3) { versioned_product_revision.create_version!(name: 'iPad 3') }
 
       specify 'that the comment STILL belongs to the latest version' do
-        expect(comment.versioned_product).to eq(vp3)
+        expect(comment.versioned_product(true)).to eq(vp3)
       end
     end
   end

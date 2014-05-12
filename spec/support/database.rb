@@ -24,4 +24,21 @@ ActiveRecord::Schema.define :version => 0 do
     t.integer :versioned_product_version
     t.string :purchaser
   end
+
+  create_table :tags, force: true do |t|
+    t.string :name
+  end
+
+  create_table :tags_versioned_products, force: true, id: false do |t|
+    t.references :versioned_product, :tag
+  end
+
+  create_table :packages, force: true do |t|
+    t.string :dimensions
+  end
+
+  create_table :packages_versioned_products, force: true, id: false do |t|
+    t.references :versioned_product, :package
+    t.integer :versioned_product_version
+  end
 end

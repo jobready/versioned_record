@@ -11,11 +11,11 @@ describe VersionedProduct do
 
     it 'unsets current version on first version' do
       perform
-      expect(VersionedProduct.find(first_version.id, 0)).to_not be_is_current_version
+      expect(VersionedProduct.find(first_version._id, 0)).to_not be_is_current_version
     end
 
     describe '#current_version' do
-      let!(:old_version) { VersionedProduct.find(first_version.id, 0) }
+      let!(:old_version) { VersionedProduct.find(first_version._id, 0) }
       let!(:new_version)  { perform }
       specify { expect(old_version.current_version).to eq(new_version) }
     end
