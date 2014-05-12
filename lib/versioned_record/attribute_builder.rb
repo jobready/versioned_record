@@ -17,7 +17,7 @@ module VersionedRecord
       @new_attrs = new_attrs.symbolize_keys
       attrs = @record.attributes.symbolize_keys.merge(@new_attrs.merge({
         is_current_version: true,
-        id:                 @record.id_with_version,
+        id:                 @record.id,
         version:            @record.version + 1
       }))
     end

@@ -17,24 +17,14 @@ module VersionedRecord
   def self.included(model_class)
     model_class.primary_keys = :id, :version
     model_class.after_save :ensure_version_deprecation!, on: :create
-    model_class.send :alias_method, :id_with_version, :id
     model_class.extend ClassMethods
     model_class.include InstanceMethods
   end
 
   module InstanceMethods
-    def ==(comparison_object)
-      if comparison_object.versioned?
-        self.id_with_version == comparison_object.id_with_version
-      end
-      # TODO: check object type too
-    end
-
-    # REVIEW: This approach may be a bad idea (it makes matching more difficult)
-    # It might be better just to keep id as a composite pkey and define _id as the simple id value
-    # with no version
+    # @return just the ID integer value (not the composite id, version key)
     def _id
-      id_with_version[0]
+      id[0]
     end
 
     # Create a new version of the existing record
