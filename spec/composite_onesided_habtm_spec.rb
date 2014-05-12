@@ -7,7 +7,6 @@ describe Package do
   describe 'creation via association' do
     subject(:package) { versioned_product.packages.create!(dimensions: '100x100') }
 
-    # TODO: This is failing because the version is not getting set when creating the record in the join table
     specify 'that the package belongs to the specific version' do
       expect(subject.versioned_products(true).to_a).to eq([versioned_product])
     end
