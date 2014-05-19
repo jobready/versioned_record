@@ -25,4 +25,8 @@ class VersionedProduct < ActiveRecord::Base
 
   # Composite Mutual HABTM
   # TODO location?
+
+  # Has one and has one through
+  has_one :installation
+  has_one :office, through: :installation
 end

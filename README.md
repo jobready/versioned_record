@@ -117,7 +117,8 @@ Right now, only PostgreSQL has been tested. MySQL may or may not work but if you
 ## Limitations
 
 * Does not currently work with ActiveRecord 4.1+
-* Calling reload on a model will load the latest _version_ of that record, not the specific one. (This is because id will return just the id and not the id/version composite.)
+* Polymorphic belongs to does not work on versioned records
+* HABTM where models on _both_ sides are versioned have not been tested
 
 
 ## Author

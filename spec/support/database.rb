@@ -41,4 +41,13 @@ ActiveRecord::Schema.define :version => 0 do
     t.references :versioned_product, :package
     t.integer :versioned_product_version
   end
+
+  create_table :installations, force: true do |t|
+    t.references :versioned_product, :office
+    t.string :installed_by
+  end
+
+  create_table :offices, force: true do |t|
+    t.string :address
+  end
 end
