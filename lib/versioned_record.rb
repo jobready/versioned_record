@@ -3,7 +3,6 @@ require 'active_record'
 require 'active_record/connection_adapters/postgresql_adapter'
 
 require 'composite_primary_keys'
-#require 'ar_overides/associations/association'
 require 'versioned_record/attribute_builder'
 require 'versioned_record/class_methods'
 require 'versioned_record/connection_adapters/postgresql'
