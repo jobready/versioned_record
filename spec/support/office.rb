@@ -1,4 +1,4 @@
 class Office < ActiveRecord::Base
-  has_many :installations
-  has_many :versioned_products, through: :installations
+  has_one :installation
+  has_one :versioned_product, through: :installation
 end

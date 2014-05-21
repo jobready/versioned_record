@@ -45,14 +45,12 @@ module VersionedRecord
                 eq_predicates << association_table[:is_current_version].eq(true)
               end
             end
-          when :has_many
+          when :has_many, :has_one
             if association.reflection.klass.versioned?
               if association.reflection.klass.table_name == association_table.name
                 eq_predicates << association_table[:is_current_version].eq(true)
               end
             end
-          when :has_one
-            puts "************************************"
         end
         cpk_and_predicate(eq_predicates)
       else

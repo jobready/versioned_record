@@ -21,6 +21,25 @@ describe VersionedProduct do
         expect(versioned_product.reload.installation).to eq(installation)
       end
     end
+
+    describe 'direct creation' do
+      let(:installation) { Installation.new(installed_by: 'Sean Connery') }
+      subject { VersionedProduct.create(name: 'iPad', price: 100, installation: installation) }
+
+      specify 'that the installation is set and persisted' do
+        expect(subject.reload.installation).to eq(installation)
+      end
+    end
+
+    describe 'simple test' do
+      let(:installation) { Installation.new(installed_by: 'Sean Connery') }
+      subject { Office.create(address: 'CQ Sydney', installation: installation) }
+
+      specify 'that the installation is set and persisted' do
+        expect(subject.reload.installation).to eq(installation)
+      end
+
+    end
   end
 
   describe 'office' do
@@ -30,8 +49,7 @@ describe VersionedProduct do
       before { versioned_product.office = office }
 
       specify "that the office's versioned product is the latest version" do
-        expect(office).to have(1).versioned_product
-        expect(office.versioned_products).to eq([versioned_product_revision])
+        expect(office.reload.versioned_product).to eq(versioned_product_revision)
       end
 
       specify 'that the previous version of the product has the office set after reload' do
