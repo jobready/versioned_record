@@ -6,8 +6,10 @@ require 'composite_primary_keys'
 require 'versioned_record/attribute_builder'
 require 'versioned_record/class_methods'
 require 'versioned_record/connection_adapters/postgresql'
+require 'versioned_record/attribute_methods/write'
 require 'versioned_record/version'
 require 'versioned_record/composite_predicates'
+require 'versioned_record/active_record_versioning'
 
 ActiveRecord::Associations::AssociationScope.include(VersionedRecord::CompositePredicates)
 
@@ -15,14 +17,14 @@ module VersionedRecord
   def self.included(model_class)
     model_class.primary_keys = :id, :version
     model_class.after_save :ensure_version_deprecation!, on: :create
-    model_class.send :alias_method, :id_with_version, :id
     model_class.extend ClassMethods
     model_class.include InstanceMethods
   end
 
   module InstanceMethods
-    def id
-      id_with_version[0]
+    # @return just the ID integer value (not the composite id, version key)
+    def _id
+      id[0]
     end
 
     # Create a new version of the existing record
@@ -80,6 +82,13 @@ module VersionedRecord
     #
     def versions
       self.class.where(id: self.id)
+    end
+
+    # Retrieve the current version of an object
+    # (May be itself)
+    #
+    def current_version
+      versions.current_versions.first
     end
 
     # Ensure that old versions are deprecated when we save

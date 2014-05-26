@@ -30,7 +30,28 @@ module VersionedRecord
       association_fields = Array(association_key).map { |key| association_table[key] }
 
       if fields.size == 1
-        eq_predicates = [ association_fields[0].eq(fields[0]), association_table[:is_current_version].eq(true) ]
+        eq_predicates = [ association_fields[0].eq(fields[0]) ]
+        case association.reflection.macro
+          when :belongs_to
+            # We don't handle Polymorphic associations at this stage
+            if !association.options[:polymorphic]
+              if association.reflection.klass.versioned?
+                eq_predicates << association_table[:is_current_version].eq(true)
+              end
+            end
+          when :has_and_belongs_to_many
+            if association.reflection.klass.versioned?
+              if association.reflection.klass.table_name == association_table.name
+                eq_predicates << association_table[:is_current_version].eq(true)
+              end
+            end
+          when :has_many, :has_one
+            if association.reflection.klass.versioned?
+              if association.reflection.klass.table_name == association_table.name
+                eq_predicates << association_table[:is_current_version].eq(true)
+              end
+            end
+        end
         cpk_and_predicate(eq_predicates)
       else
         super

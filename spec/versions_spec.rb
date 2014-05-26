@@ -1,7 +1,8 @@
 require 'spec_helper'
 
 describe VersionedProduct do
-  let!(:first_version) { VersionedProduct.create(name: 'iPad', price: 100) }
+  let(:company)        { Company.create(name: 'Acme Corp') }
+  let!(:first_version) { VersionedProduct.create(name: 'iPad', price: 100, company: company) }
 
   shared_examples 'successful version creation' do
     it 'creates a new version' do
@@ -10,17 +11,30 @@ describe VersionedProduct do
 
     it 'unsets current version on first version' do
       perform
-      expect(VersionedProduct.find(first_version.id, 0)).to_not be_is_current_version
+      expect(VersionedProduct.find(first_version._id, 0)).to_not be_is_current_version
+    end
+
+    describe '#current_version' do
+      let!(:old_version) { VersionedProduct.find(first_version._id, 0) }
+      let!(:new_version)  { perform }
+      specify { expect(old_version.current_version).to eq(new_version) }
     end
 
     describe 'the new version' do
       subject { perform.reload }
-      specify { expect(subject).to be_is_current_version }
-      specify { expect(subject.version).to eq(1) }
-      specify { expect(subject.name).to eq('iPad 2') }
-      specify { expect(subject.price).to eq(100) }
-      specify { expect(subject).to be_valid }
-      specify { expect(subject).to be_persisted }
+
+      specify do
+        expect(subject).to be_is_current_version
+        expect(subject).to be_valid
+        expect(subject).to be_persisted
+      end
+
+      specify do
+        expect(subject.version).to eq(1)
+        expect(subject.name).to eq('iPad 2')
+        expect(subject.price).to eq(100)
+        expect(subject.company).to eq(company)
+      end
     end
   end
 
