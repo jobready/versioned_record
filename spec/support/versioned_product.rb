@@ -10,8 +10,7 @@ class VersionedProduct < ActiveRecord::Base
 
   # Composite Belongs To
   has_many :sales, {
-    foreign_key: [:versioned_product_id, :versioned_product_version],
-    primary_key: [:id, :version ]
+    foreign_key: [:versioned_product_id, :versioned_product_version]
   }
 
   # Simple HABTM
