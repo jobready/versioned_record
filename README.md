@@ -82,22 +82,18 @@ A simple `belongs_to` will work as normal but will always refer to the latest ve
 
 `belongs_to` A versioned model but references a specific version
 
-`belongs_to` must specify the `foreign_key` and primary key settings. You should set autosave to false on the `belongs_to` for these types
-of associations.
+`belongs_to` must specify the `foreign_key` and primary key settings.
 
     class Contract < ActiveRecord::Base
       include VersionedRecord
       has_many :apprentices, {
-        foreign_key: [:contract_id, :contract_version],
-        primary_key: [:id, :version ]
+        foreign_key: [:contract_id, :contract_version]
       }
     end
 
     class Apprentice < ActiveRecord::Base
       belongs_to :contract, {
-        foreign_key: [:contract_id, :contract_version],
-        primary_key: [ :id, version ],
-        autosave: false
+        foreign_key: [:contract_id, :contract_version]
       }
     end
 
