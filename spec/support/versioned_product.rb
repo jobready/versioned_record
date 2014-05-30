@@ -8,7 +8,7 @@ class VersionedProduct < ActiveRecord::Base
   # Simple Belongs To
   has_many :comments
 
-  # Composite Belongs To
+  # Composite has many
   has_many :sales, {
     foreign_key: [:versioned_product_id, :versioned_product_version]
   }
@@ -28,4 +28,9 @@ class VersionedProduct < ActiveRecord::Base
   # Has one and has one through
   has_one :installation
   has_one :office, through: :installation
+
+  # Composite has_one
+  has_one :container, {
+    foreign_key: [:versioned_product_id, :versioned_product_version]
+  }
 end

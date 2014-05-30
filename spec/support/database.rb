@@ -50,4 +50,10 @@ ActiveRecord::Schema.define :version => 0 do
   create_table :offices, force: true do |t|
     t.string :address
   end
+
+  create_table :containers, versioned: true, force: true do |t|
+    t.references :versioned_product
+    t.integer :versioned_product_version
+    t.string :name
+  end
 end

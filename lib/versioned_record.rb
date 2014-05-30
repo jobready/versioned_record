@@ -70,7 +70,8 @@ module VersionedRecord
     def build_version(new_attrs = {})
       new_version = self.class.new(new_version_attrs(new_attrs)).tap do |built|
         built.deprecate_old_versions_after_create!
-      end
+        preserve_has_one_associations_to(built) 
+     end
     end
 
     # Retrieve all versions of this record
@@ -122,6 +123,27 @@ module VersionedRecord
       def ensure_version_deprecation!
         if deprecate_old_versions_after_create?
           deprecate_old_versions(self)
+        end
+      end
+
+      # This is required because a new version which has not been persisted
+      # to the database breaks the normal ActiveRecord paradigm.
+      # Because normally when a record has not yet been persisted
+      # it can have no persisted has_one associations because there is no foriegn key.
+      # In our case we have a foreign key because it was determined from the
+      # previous version.
+      #
+      # This doesn't apply to composite has_one associations because they will
+      # use a different foreign key to the parent version.
+      #
+      def preserve_has_one_associations_to(new_version)
+        # Preserve simple has_one reflections
+        self.class.reflections.select { |_, reflection|
+          reflection.macro == :has_one
+        }.each do |key, reflection|
+          if !reflection.foreign_key.kind_of?(Array)
+            new_version.send("#{key}=", self.send(key))
+          end
         end
       end
   end
