@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Sale do
+describe VersionedProduct do
   let!(:versioned_product) { VersionedProduct.create(name: 'iPad', price: 100) }
   let!(:versioned_product_revision) { versioned_product.create_version!(name: 'iPad 2') }
 

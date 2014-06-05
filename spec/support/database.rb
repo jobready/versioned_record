@@ -10,6 +10,8 @@ ActiveRecord::Schema.define :version => 0 do
 
   create_table :versioned_products, versioned: true, force: true do |t|
     t.references :company
+    t.references :catalog
+    t.integer :catalog_version
     t.string :name
     t.decimal :price
   end
@@ -54,6 +56,10 @@ ActiveRecord::Schema.define :version => 0 do
   create_table :containers, versioned: true, force: true do |t|
     t.references :versioned_product
     t.integer :versioned_product_version
+    t.string :name
+  end
+
+  create_table :catalogs, force: true, versioned: true do |t|
     t.string :name
   end
 end
