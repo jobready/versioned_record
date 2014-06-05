@@ -82,7 +82,7 @@ module VersionedRecord
     #     person.versions.order(:version)
     #
     def versions
-      self.class.where(id: self.id)
+      self.class.where(id: self._id)
     end
 
     # Retrieve the current version of an object

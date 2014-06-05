@@ -56,7 +56,7 @@ module VersionedRecord
     #     other_versions = person.versions.exclude(person)
     #
     def exclude(record)
-      where(id: record.id).where('version != ?', record.version)
+      where(id: record._id).where.not(version: record.version)
     end
   end
 end
