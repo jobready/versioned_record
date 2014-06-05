@@ -8,6 +8,11 @@ class VersionedProduct < ActiveRecord::Base
   # Simple Belongs To
   has_many :comments
 
+  # Composite Belongs To where the related record is also versioned
+  belongs_to :catalog, {
+    foreign_key: [:catalog_id, :catalog_version]
+  }
+
   # Composite has many
   has_many :sales, {
     foreign_key: [:versioned_product_id, :versioned_product_version]

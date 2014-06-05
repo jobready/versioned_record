@@ -34,12 +34,15 @@ describe VersionedProduct do
   end
 
   describe 'scopes' do
-    let!(:first_version)  { VersionedProduct.create(name: 'Macbook Pro') }
-    let!(:second_version) { first_version.create_version!(name: 'Macbook Retina') }
+    let!(:a_v0) { VersionedProduct.create(name: 'Macbook Pro') }
+    let!(:a_v1) { a_v0.create_version!(name: 'Macbook Retina') }
+    let!(:a_v2) { a_v1.create_version!(name: 'Macbook Retina Sick') }
+    let!(:b_v0) { VersionedProduct.create(name: 'Macbook Air') }
+    let!(:b_v1) { b_v0.create_version!(name: 'Macbook Air 2') }
 
     describe '::find_current' do
       it 'finds the latest version' do
-        expect(VersionedProduct.find_current(first_version.id)).to eq(second_version)
+        expect(VersionedProduct.find_current(a_v0.id)).to eq(a_v2)
       end
 
       context 'where no matching record exists' do
@@ -51,19 +54,19 @@ describe VersionedProduct do
 
     describe '::current_versions' do
       it 'returns only the current version' do
-        expect(VersionedProduct.current_versions).to eq([second_version])
+        expect(VersionedProduct.current_versions).to eq([a_v2, b_v1])
       end
     end
 
     describe '::exclude_current' do
       it 'returns only the current version' do
-        expect(VersionedProduct.exclude_current).to eq([first_version])
+        expect(VersionedProduct.exclude_current.order(:id, :version)).to eq([a_v0, a_v1, b_v0])
       end
     end
 
     describe '::exclude' do
       it 'returns everything but the excluded record' do
-        expect(VersionedProduct.exclude(first_version)).to eq([second_version])
+        expect(b_v1.versions.exclude(b_v1)).to eq([b_v0])
       end
     end
   end
