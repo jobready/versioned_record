@@ -33,29 +33,43 @@ module VersionedRecord
         eq_predicates = [ association_fields[0].eq(fields[0]) ]
         case association.reflection.macro
           when :belongs_to
-            # We don't handle Polymorphic associations at this stage
-            if !association.options[:polymorphic]
-              if association.reflection.klass.versioned?
-                eq_predicates << association_table[:is_current_version].eq(true)
-              end
-            end
+            add_belongs_to_predicates!(eq_predicates, association_table)
           when :has_and_belongs_to_many
-            if association.reflection.klass.versioned?
-              if association.reflection.klass.table_name == association_table.name
-                eq_predicates << association_table[:is_current_version].eq(true)
-              end
-            end
+            add_habtm_predicates!(eq_predicates, association, association_table)
           when :has_many, :has_one
-            if association.reflection.klass.versioned?
-              if association.reflection.klass.table_name == association_table.name
-                eq_predicates << association_table[:is_current_version].eq(true)
-              end
-            end
+            add_has_x_predicates!(eq_predicates, association, association_table)
         end
         cpk_and_predicate(eq_predicates)
       else
         super
       end
     end
+
+    private
+      def add_belongs_to_predicates!(predicates, association_table)
+        if self.klass.versioned?
+          add_current_version_constraint!(predicates, association_table)
+        end
+      end
+
+      def add_habtm_predicates!(predicates, association, association_table)
+        if self.klass.versioned?
+          if association.reflection.klass.table_name == association_table.name
+            add_current_version_constraint!(predicates, association_table)
+          end
+        end
+      end
+
+      def add_has_x_predicates!(predicates, association, association_table)
+        if association.reflection.klass.versioned?
+          if association.reflection.klass.table_name == association_table.name
+            add_current_version_constraint!(predicates, association_table)
+          end
+        end
+      end
+
+      def add_current_version_constraint!(predicates, association_table)
+        predicates << association_table[:is_current_version].eq(true)
+      end
   end
 end
