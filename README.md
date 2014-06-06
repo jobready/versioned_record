@@ -113,7 +113,6 @@ Right now, only PostgreSQL has been tested. MySQL may or may not work but if you
 ## Limitations
 
 * Does not currently work with ActiveRecord 4.1+
-* Polymorphic belongs to does not work on versioned records
 * HABTM where models on _both_ sides are versioned have not been tested
 
 

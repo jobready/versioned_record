@@ -4,7 +4,7 @@ ActiveRecord::Base.establish_connection(dbconfig[env]['postgresql'])
 
 ActiveRecord::Schema.define :version => 0 do
 
-  create_table :companies, force: true do |t|
+  create_table :companies, force: true, versioned: true do |t|
     t.string :name
   end
 
@@ -60,6 +60,11 @@ ActiveRecord::Schema.define :version => 0 do
   end
 
   create_table :catalogs, force: true, versioned: true do |t|
+    t.string :name
+  end
+
+  create_table :users, force: true do |t|
+    t.references :company, polymorphic: true
     t.string :name
   end
 end
