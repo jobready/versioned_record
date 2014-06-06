@@ -1,3 +1,4 @@
 class Company < ActiveRecord::Base
-  has_many :users
+  include VersionedRecord
+  has_many :users, as: :entity
 end
