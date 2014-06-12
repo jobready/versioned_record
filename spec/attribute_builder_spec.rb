@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe VersionedRecord::AttributeBuilder do
-  describe '#parent_attributes' do
+  describe '#original_attributes' do
     let(:creation_attrs) do
       {
         name: 'Foo',
@@ -15,13 +15,13 @@ describe VersionedRecord::AttributeBuilder do
     let(:record) { VersionedProduct.create!(creation_attrs) }
     subject      { described_class.new(record) }
 
-    specify 'that parent attributes does not include timestamps' do
-      expect(subject.parent_attributes[:created_at]).to be_nil
-      expect(subject.parent_attributes[:updated_at]).to be_nil
+    specify 'that original attributes does not include timestamps' do
+      expect(subject.original_attributes[:created_at]).to be_nil
+      expect(subject.original_attributes[:updated_at]).to be_nil
     end
 
-    specify 'that the parent attributes contain all relevant attributes' do
-      expect(subject.parent_attributes).to eq(
+    specify 'that the original attributes contain all relevant attributes' do
+      expect(subject.original_attributes).to eq(
         creation_attrs.merge(id: record._id, version: 0, is_current_version: true)
       )
     end

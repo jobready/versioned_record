@@ -15,19 +15,19 @@ module VersionedRecord
     # @param [Hash] new_attrs are the attributes we are changing in this version
     def attributes(new_attrs)
       @new_attrs = new_attrs.symbolize_keys
-      attrs = parent_attributes.merge(@new_attrs.merge({
+      attrs = original_attributes.merge(@new_attrs.merge({
         is_current_version: true,
         id:                 @record.id,
         version:            @record.version + 1
       }))
     end
 
-    # The relevant attributes of the parent
+    # The relevant attributes of the previous version
     # i.e: the record we initialized this builder with
     #
     # @return Hash excluding created_at and updated_at keys
     #
-    def parent_attributes
+    def original_attributes
       @record.attributes.symbolize_keys.select do |(attr, _)|
         !%i(created_at updated_at).include?(attr)
       end
