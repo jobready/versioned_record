@@ -14,6 +14,7 @@ ActiveRecord::Schema.define :version => 0 do
     t.integer :catalog_version
     t.string :name
     t.decimal :price
+    t.timestamps
   end
 
   create_table :comments, force: true do |t|

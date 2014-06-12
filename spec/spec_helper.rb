@@ -1,9 +1,9 @@
 require 'coveralls'
 Coveralls.wear!
 
-#require 'active_record'
 require 'versioned_record'
 require 'database_cleaner'
+require 'timecop'
 
 require 'byebug'
 
